@@ -22,7 +22,11 @@ fn handle(mut stream: TcpStream) {
     println!("{}", String::from_utf8_lossy(&buf));
     let (stat, file) = if buf.starts_with(b"GET / ") {
         ("200 OK", "index.html")
-    } else {
+    } else if buf.starts_with(b"GET /sleep ") {
+        std::thread::sleep(std::time::Duration::from_millis(5000));
+        ("200 OK", "index.html")
+    } 
+    else {
         ("404 NOT FOUND", "404.html")
     };
     let contents = fs::read_to_string("./public/views/".to_owned() + file).unwrap();
